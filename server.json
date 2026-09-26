@@ -1,0 +1,24 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-09-29/server.schema.json",
+  "name": "io.github.wangjingjing1026uwh-hub/zaoqiniaoer",
+  "description": "Send three unrelated people to a physical address in China and get back what they actually saw.",
+  "version": "1.0.0",
+  "repository": {
+    "url": "https://github.com/wangjingjing1026uwh-hub/zaoqiniaoer-mcp",
+    "source": "github"
+  },
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://zaoqiniaoerhannile.com/api/mcp",
+      "headers": [
+        {
+          "name": "Authorization",
+          "description": "Bearer sma_live_<your key> — self-serve at https://zaoqiniaoerhannile.com/developers/register",
+          "isRequired": true,
+          "isSecret": true
+        }
+      ]
+    }
+  ]
+}
