@@ -1,16 +1,25 @@
-# Zaoqiniaoer MCP — send real people to check a real place
+# Zaoqiniaoer MCP — ask a real person who is actually there
 
-An MCP server that lets an AI agent **dispatch three unrelated human beings** to a
-physical address in China, and get back what they actually saw.
+An MCP server that lets an AI agent **pay a real person in China to go look at
+something and say what they saw**.
 
-Models are good at language and bad at being somewhere. This closes that gap:
-one tool call, three strangers go to the address, photograph the entrance, walk in
-and ask, and each writes down what they saw — independently.
+Models are good at language and bad at being somewhere. There is no database that
+holds "is that shop open right now". Someone has to walk over and look.
+
+Two tiers, same pipeline:
+
+| | What you get | Price | Time |
+|---|---|---|---|
+| **Ask someone there** | One person nearby goes and tells you what they saw | **¥5–30** (~$0.70–4) | hours |
+| **Verify a place** | Three unrelated people each go, each judge independently, you get a report | **from ¥70** (~$10) | 24–48h |
+
+Start with the cheap one. It answers most questions and costs less than a coffee.
+The expensive one is for when you need something you can show to someone else.
 
 - **Endpoint:** `https://zaoqiniaoerhannile.com/api/mcp` (Streamable HTTP)
-- **Report:** 24–48 hours
-- **Price:** from ¥700 (about $99) per address
 - Operated by 芜湖早起鸟儿智能科技有限公司 (Wuhu, Anhui, China)
+- Real end-to-end machine order ran 2026-08-15: ordered, charged, dispatched,
+  report returned — no human in the loop on our side.
 
 ## Install
 
@@ -35,9 +44,27 @@ no sales call.
 
 ## Tools
 
+Four tools: **two ways to order, two ways to read the result.** Nothing else —
+no `cancel`, no `refund`, no `change_price`. Those are irreversible and involve
+money, so they stay with humans in the web console.
+
+### `ask_someone_there` — start here
+
+One person who happens to be nearby goes and looks. Hours, not days.
+
+| Argument | Required | Meaning |
+|---|---|---|
+| `question` | yes | What you want to know, in one sentence. Specific beats vague: "is the Lanzhou noodle place opposite Golden Eagle still open" is far more useful than "how is that shop" |
+| `place_hint` | yes | Where to go. An address, a shop name, a street corner — anything findable |
+| `city` | no | e.g. `芜湖`. Helps us find someone close |
+| `price_yuan` | no | ¥5–30, defaults to ¥5. Pay more, get picked up faster |
+
+Returns an `ask_id`. **If nobody takes it before it expires, your balance is
+automatically refunded** — you are not charged for a trip nobody made.
+
 ### `verify_place`
 
-Send three unrelated people to an address and have them report what is there.
+Three unrelated people go to an address and each report what is there.
 
 | Argument | Required | Meaning |
 |---|---|---|
@@ -45,22 +72,18 @@ Send three unrelated people to an address and have them report what is there.
 | `claim` | yes | The thing you want confirmed, e.g. "this address has a factory actually operating" |
 | `address` | one of | Street address |
 | `url` | one of | Their storefront or homepage |
-| `budget_yuan` | no | Defaults to the minimum. Higher budget, faster pickup. |
+| `budget_yuan` | no | Defaults to the minimum (¥70). Higher budget, faster pickup |
 
 Returns an `order_id`. **This spends real money and sends real people outside**, so
 the server instructs models to confirm with the user before calling it.
 
-### `get_verification_result`
+### `get_ask_answer` / `get_verification_result`
 
-Look up progress, and the three independent accounts once the report is ready.
+Look up progress and results, by `ask_id` and `order_id` respectively.
 
-| Argument | Required | Meaning |
-|---|---|---|
-| `order_id` | yes | From `verify_place` |
-
-That is the whole surface. There is deliberately no `cancel`, no `refund`, no
-`change_price` tool — those are irreversible and involve money, so they stay with
-humans in the web console.
+**Until someone has actually answered, `answer` is `null`.** That means nobody has
+been there yet — not "no result". The tool description tells the model, in so many
+words, not to invent an answer at that point.
 
 ## What this is not
 
@@ -68,8 +91,8 @@ humans in the web console.
 - **Not a factory audit.** No capacity, certification, or labour assessment.
 - **Not a credit check.** We report what is at the address, not whether they pay debts.
 
-It answers one question well: *what is actually at that address, right now, according
-to three people who went and looked.*
+It answers one question well: *what is actually there right now, according to
+someone who went and looked.*
 
 ## Why three people
 
@@ -82,12 +105,14 @@ be edited or deleted afterwards — including by us, and including by them.
 ## Idempotency
 
 The server derives an idempotency key from `(client, arguments, 10-minute window)`.
-Models retry; a retry here would mean sending three more people and charging again.
-Identical calls inside that window return the same order rather than creating a new one.
+Models retry. **A retry here means sending another human outside and charging you
+again** — so identical calls inside that window return the existing order instead of
+creating a new one. Over REST you pass your own `Idempotency-Key` header; it is
+required, not optional.
 
 ## Rate limits
 
-30 `verify_place` calls per client per hour. Exceeding it returns a tool error, not a
+30 ordering calls per client per hour. Exceeding it returns a tool error, not a
 protocol error, so the model can read it and back off.
 
 ## Docs
