@@ -1,7 +1,7 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-09-29/server.schema.json",
   "name": "io.github.wangjingjing1026uwh-hub/zaoqiniaoer",
-  "description": "Pay a real person in China to go look at something and tell you what they saw. ¥5 for one person in hours, or ¥70 for three independent people and a report.",
+  "description": "Pay someone in China to go look at something right now and say what they saw. From \u00a55 (~$0.70).",
   "version": "1.1.0",
   "repository": {
     "url": "https://github.com/wangjingjing1026uwh-hub/zaoqiniaoer-mcp",
