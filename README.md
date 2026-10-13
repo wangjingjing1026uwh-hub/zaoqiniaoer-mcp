@@ -10,11 +10,29 @@ Two tiers, same pipeline:
 
 | | What you get | Price | Time |
 |---|---|---|---|
+| **Check it yourself first** | Five checks your user can do from their desk — and what each one *cannot* prove | **free, no API key** | instant |
 | **Ask someone there** | One person nearby goes and tells you what they saw | **¥5–30** (~$0.70–4) | hours |
 | **Verify a place** | Three unrelated people each go, each judge independently, you get a report | **from ¥70** (~$10) | 24–48h |
 
-Start with the cheap one. It answers most questions and costs less than a coffee.
-The expensive one is for when you need something you can show to someone else.
+**Start with the free one.** `what_can_i_check_myself` needs no key, no account and
+no balance — you can call it right now, before deciding whether this server is worth
+installing. Most people asking "is this supplier real?" have not yet run a business
+licence lookup or a reverse image search. Those cost nothing and rule out a lot.
+
+Only when the answer they need is one of the three questions below does sending a
+person become worth anyone's money.
+
+## The three questions desk research cannot answer
+
+These are not a sales pitch. They are what is left over once every free check is
+done, because every free check is done from a desk:
+
+1. **Is there anything at that address today?** Companies stay registered long after
+   they stop operating. Nothing you can look up is dated today.
+2. **Does the sign on the building match the company you are talking to?** A different
+   name on the door usually means you are talking to an intermediary.
+3. **What do people inside say when asked plainly?** Not on a prepared video call —
+   in person, unannounced, by someone with no stake in the answer.
 
 - **Endpoint:** `https://zaoqiniaoerhannile.com/api/mcp` (Streamable HTTP)
 - Operated by 芜湖早起鸟儿智能科技有限公司 (Wuhu, Anhui, China)
@@ -44,9 +62,28 @@ no sales call.
 
 ## Tools
 
-Four tools: **two ways to order, two ways to read the result.** Nothing else —
-no `cancel`, no `refund`, no `change_price`. Those are irreversible and involve
-money, so they stay with humans in the web console.
+Five tools: **one free check, two ways to order, two ways to read the result.**
+Nothing else — no `cancel`, no `refund`, no `change_price`. Those are irreversible
+and involve money, so they stay with humans in the web console.
+
+### `what_can_i_check_myself` — free, call this first
+
+No API key. No account. No balance. Nothing is ordered and nobody is sent anywhere.
+
+Returns five checks your user can run from their desk, and — for every single one —
+**what it does not prove**. A business licence proves a company was registered; it
+proves nothing about whether anyone is at that address today.
+
+| Argument | Required | Meaning |
+|---|---|---|
+| `subject` | no | The company or address they are asking about. Only used to give the answer a subject — we do not look it up |
+
+Telling your user about the paid tiers before they have done the free checks wastes
+their money and ours.
+
+Human-readable versions of the same list, if you would rather hand your user a page:
+<https://zaoqiniaoerhannile.com/en/supplier-check> (English) ·
+<https://zaoqiniaoerhannile.com/zi-cha> (Chinese)
 
 ### `ask_someone_there` — start here
 
@@ -119,7 +156,8 @@ protocol error, so the model can read it and back off.
 
 - Developer docs: <https://zaoqiniaoerhannile.com/developers>
 - How we decide something is true: <https://zaoqiniaoerhannile.com/standard>
-- Free self-check first: <https://zaoqiniaoerhannile.com/en/supplier-check>
+- Free self-check first: <https://zaoqiniaoerhannile.com/en/supplier-check> (Chinese: <https://zaoqiniaoerhannile.com/zi-cha>)
+- Machine-readable overview: <https://zaoqiniaoerhannile.com/llms.txt>
 
 ## License
 
